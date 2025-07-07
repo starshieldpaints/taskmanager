@@ -1,6 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SuperAdminDashboard from '../screens/Dashboard/SuperAdminDashboard';
+
 import TaskDetailScreen from '../screens/Tasks/TaskDetailScreen';
 
 const Stack = createNativeStackNavigator();
