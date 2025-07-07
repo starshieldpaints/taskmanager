@@ -1,8 +1,8 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import dotenv from 'dotenv';
-dotenv.config();
+// Expo automatically loads variables defined in .env at build time
+// so we can directly access process.env without using dotenv here
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
