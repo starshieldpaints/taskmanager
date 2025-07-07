@@ -1,6 +1,8 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
+import "firebase/compat/storage";
+
 import Constants from 'expo-constants';
 
 // Environment variables are injected via app.config.js into Constants.expoConfig.extra
