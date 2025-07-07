@@ -3,8 +3,10 @@ import React, { useContext } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthContext } from '../utils/auth';
 import LoginScreen from '../screens/Auth/LoginScreen';
+import RegisterScreen from '../screens/Auth/RegisterScreen';
+import VerifyScreen from '../screens/Auth/VerifyScreen';
 // import your other navigators / screens here:
-import TaskTabs from './TaskTabs';            // e.g. your user tabs
+import TaskTabs from './TaskTabs.js';            // e.g. your user tabs
 import AdminNavigator from './AdminNavigator';       // your admin stack
 import SuperAdminNavigator from './SuperAdminNavigator'; // your superadmin stack
 
@@ -19,6 +21,8 @@ export default function RootNavigator() {
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="Verify" component={VerifyScreen} />
       </Stack.Navigator>
     );
   }
