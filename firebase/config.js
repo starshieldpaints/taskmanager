@@ -14,6 +14,7 @@ const {
   FIREBASE_APP_ID,
 } = Constants.expoConfig?.extra ?? {};
 
+
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
   authDomain: FIREBASE_AUTH_DOMAIN,
