@@ -1,9 +1,17 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, StyleSheet, TextInput, Platform, ScrollView } from 'react-native';
-import { Text, Button, RadioButton } from 'react-native-paper';
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Platform,
+  ScrollView,
+  Text,
+  Button,
+} from 'react-native';
+import { RadioButton } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
-  getFirestore,
+
   collection,
   addDoc,
   query,
@@ -11,11 +19,12 @@ import {
   getDocs,
   serverTimestamp,
 } from 'firebase/firestore';
+import { db } from '../../firebase/config';
+
 import { AuthContext } from '../../utils/auth';
 import sendNotification from '../../utils/sendNotification';
 
 export default function CreateTaskScreen({ navigation }) {
-  const db = getFirestore();
   const { user, role } = useContext(AuthContext);
 
   const [title, setTitle] = useState('');
@@ -41,6 +50,7 @@ export default function CreateTaskScreen({ navigation }) {
       })();
     } else if (role === 'admin') {
       (async () => {
+
         const snap = await getDocs(
           query(collection(db, 'users'), where('adminId', '==', user.uid))
         );
@@ -117,30 +127,34 @@ export default function CreateTaskScreen({ navigation }) {
         </View>
       </RadioButton.Group>
 
-      {assigneeType === 'admin' && admins.map(a => (
-        <Button
-          key={a.id}
-          mode={selectedAdmin === a.id ? 'contained' : 'outlined'}
-          onPress={() => setSelectedAdmin(a.id)}
-        >
-          {a.name || a.email}
-        </Button>
-      ))}
+      {assigneeType === 'admin' &&
+        admins.map((a) => (
+          <View key={a.id} style={s.selectBtn}>
+            <Button
+              title={a.name || a.email}
+              color={selectedAdmin === a.id ? '#D32F2F' : undefined}
+              onPress={() => setSelectedAdmin(a.id)}
+            />
+          </View>
+        ))}
 
-      {assigneeType === 'user' && users.map(u => (
-        <Button
-          key={u.id}
-          mode={selectedUser === u.id ? 'contained' : 'outlined'}
-          onPress={() => setSelectedUser(u.id)}
-        >
-          {u.name || u.email}
-        </Button>
-      ))}
+      {assigneeType === 'user' &&
+        users.map((u) => (
+          <View key={u.id} style={s.selectBtn}>
+            <Button
+              title={u.name || u.email}
+              color={selectedUser === u.id ? '#D32F2F' : undefined}
+              onPress={() => setSelectedUser(u.id)}
+            />
+          </View>
+        ))}
 
       <Text style={s.label}>Deadline:</Text>
-      <Button onPress={() => setShowPicker(true)}>
-        {deadline.toLocaleDateString()} {deadline.toLocaleTimeString()}
-      </Button>
+      <Button
+        title={`${deadline.toLocaleDateString()} ${deadline.toLocaleTimeString()}`}
+        onPress={() => setShowPicker(true)}
+        color="#D32F2F"
+      />
       {showPicker && (
         <DateTimePicker
           value={deadline}
@@ -153,9 +167,9 @@ export default function CreateTaskScreen({ navigation }) {
         />
       )}
 
-      <Button style={s.submit} mode="contained" onPress={onSubmit}>
-        Create Task
-      </Button>
+      <View style={s.submitBtn}>
+        <Button title="Create Task" onPress={onSubmit} color="#D32F2F" />
+      </View>
     </ScrollView>
   );
 }
@@ -166,5 +180,6 @@ const s = StyleSheet.create({
   label: { marginTop: 12, fontWeight: '600' },
   input: { borderWidth: 1, borderColor: '#DDD', borderRadius: 6, padding: 8, marginVertical: 6 },
   radioRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 4 },
-  submit: { marginTop: 24, backgroundColor: '#D32F2F' },
+  selectBtn: { marginVertical: 4 },
+  submitBtn: { marginTop: 24 },
 });

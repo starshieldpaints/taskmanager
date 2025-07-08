@@ -16,6 +16,7 @@ const firebaseConfig = {
 
 
 
+
   apiKey: "AIzaSyD7GCjiwy7mDtvWK9vRPu5m2bzRbLcZWzw",
   authDomain: "to-do-list-b831f.firebaseapp.com",
   projectId: "to-do-list-b831f",
