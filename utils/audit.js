@@ -1,4 +1,5 @@
-import { firebase } from '../firebase/config';
+import { auth, db } from '../firebase/config';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 /**
  * Log every important action to /auditLogs.
@@ -6,14 +7,11 @@ import { firebase } from '../firebase/config';
  * @param {object} details  e.g. { taskId, to: userId }
  */
 export async function logAction(action, details = {}) {
-    const uid = firebase.auth().currentUser.uid;
-    await firebase
-        .firestore()
-        .collection('auditLogs')
-        .add({
-            action,
-            by: uid,
-            at: firebase.firestore.FieldValue.serverTimestamp(),
-            details,
-        });
+    const uid = auth.currentUser.uid;
+    await addDoc(collection(db, 'auditLogs'), {
+        action,
+        by: uid,
+        at: serverTimestamp(),
+        details,
+    });
 }
