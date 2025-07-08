@@ -1,103 +1,96 @@
-import React, { useState, useEffect, useContext } from 'react';
-import {
-  View,
-  Text,
-  Button,
-  TextInput,
-  StyleSheet,
-  ActivityIndicator,
-  Alert
-} from 'react-native';
-import { firebase } from '../../firebase/config';
+import React, { useEffect, useState, useContext } from 'react';
+import { View, Text, StyleSheet, ScrollView, Button, ActivityIndicator, Alert } from 'react-native';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { AuthContext } from '../../utils/auth';
+import { db } from '../../firebase/config';
 import sendNotification from '../../utils/sendNotification';
 
-import { AuthContext } from '../../utils/auth';
 
 export default function TaskDetailScreen({ route, navigation }) {
   const { taskId } = route.params;
-  const db = getFirestore();
-  const { user, role } = useContext(AuthContext);
-
+  const { user } = useContext(AuthContext);
   const [task, setTask] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const sub = firebase
-      .firestore()
-      .collection('tasks')
-      .doc(taskId)
-      .onSnapshot((d) => setTask({ id: d.id, ...d.data() }));
-    return sub;
+    (async () => {
+      try {
+        const snap = await getDoc(doc(db, 'tasks', taskId));
+        if (snap.exists()) {
+          setTask({ id: snap.id, ...snap.data() });
+        }
+      } catch (e) {
+        Alert.alert('Error', 'Failed to load task');
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [taskId]);
 
-  const updateStatus = async (action) => {
+  async function changeStatus(newStatus) {
     if (!task) return;
     try {
       setLoading(true);
-      const newStatus =
-        action === 'accept'
-          ? 'inprogress'
-          : action === 'complete'
-          ? 'done'
-          : task.status;
-      await firebase
-        .firestore()
-        .collection('tasks')
-        .doc(taskId)
-        .update({
-          status: newStatus,
-          remarks: firebase.firestore.FieldValue.arrayUnion({
-            by: user.uid,
-            text: remarks,
-            at: firebase.firestore.FieldValue.serverTimestamp()
-          })
-        });
-      await sendNotification({
-        userId: task.createdBy,
-        type: action,
-        taskId,
-        message: `${user.email} ${action}ed "${task.title}"`,
-      });
-      await logAction(`${action}Task`, { taskId, action });
+      await updateDoc(doc(db, 'tasks', taskId), { status: newStatus });
+      setTask((t) => ({ ...t, status: newStatus }));
+
+      const message = `Task "${task.title}" is now ${newStatus}`;
+      await sendNotification({ userId: task.createdBy, taskId, type: 'status', message });
+      if (task.assignedTo) {
+        await sendNotification({ userId: task.assignedTo, taskId, type: 'status', message });
+      }
     } catch (e) {
-      Alert.alert('Error', e.message);
+      Alert.alert('Error', 'Failed to update task');
     } finally {
       setLoading(false);
-
     }
-
-    navigation.goBack();
   }
+
+  if (loading) {
+    return (
+      <View style={s.center}><ActivityIndicator size="large" color="#d32f2f" /></View>
+    );
+  }
+  if (!task) {
+    return (
+      <View style={s.center}><Text>Task not found.</Text></View>
+    );
+  }
+
+  const isAssignee = user?.uid === task.assignedTo;
+  const isCreator = user?.uid === task.createdBy;
 
   return (
     <ScrollView style={s.container}>
-      <Card>
-        <Card.Title
-          title={task.title}
-          subtitle={`Status: ${task.status.toUpperCase()}`}
-        />
-        <Card.Content>
-          <Text>Description:</Text>
-          <Text>{task.desc}</Text>
-          <Text>Deadline: {task.deadline.toDate().toLocaleString()}</Text>
-          <Text>Assigned by: {task.createdBy}</Text>
-          <Text>Assigned to: {task.assignedTo}</Text>
-        </Card.Content>
-        <Card.Actions>
-          {isAssignee && task.status === 'todo' && (
+      <Text style={s.title}>{task.title}</Text>
+      <Text style={s.label}>Description:</Text>
+      <Text>{task.desc}</Text>
+      <Text style={s.label}>Deadline:</Text>
+      <Text>{task.deadline?.toDate().toLocaleString()}</Text>
+      <Text style={s.label}>Status:</Text>
+      <Text>{task.status}</Text>
+
+      {task.status === 'todo' && (
+        <View style={s.actions}>
+          {isAssignee && (
             <>
-              <Button onPress={() => changeStatus('inprogress')}>Start</Button>
-              <Button onPress={() => changeStatus('done')}>Complete</Button>
+              <Button title="Start" onPress={() => changeStatus('inprogress')} />
+              <Button title="Complete" onPress={() => changeStatus('done')} />
             </>
           )}
-          {isCreator && task.status === 'todo' && (
-            <Button onPress={() => changeStatus('cancelled')}>Cancel</Button>
+          {isCreator && (
+            <Button title="Cancel" onPress={() => changeStatus('cancelled')} />
           )}
-        </Card.Actions>
-      </Card>
+        </View>
+      )}
     </ScrollView>
   );
 }
 
 const s = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 12 },
+  label: { marginTop: 12, fontWeight: '600' },
+  actions: { marginTop: 24 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' }
 });
