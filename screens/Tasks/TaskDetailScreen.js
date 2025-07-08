@@ -12,7 +12,6 @@ import { firebase } from '../../firebase/config';
 import sendNotification from '../../utils/sendNotification';
 
 import { AuthContext } from '../../utils/auth';
-import sendNotification from '../../utils/sendNotification';
 
 export default function TaskDetailScreen({ route, navigation }) {
   const { taskId } = route.params;
