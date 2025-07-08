@@ -20,7 +20,6 @@
     "expo-app-loading": "^2.1.1",
     "expo-firebase-recaptcha": "^2.3.1",
     "expo-image-picker": "~15.0.7",
-
     "expo-notifications": "~0.31.4",
     "expo-status-bar": "~2.2.3",
     "firebase": "^11.10.0",
@@ -38,5 +37,8 @@
   "devDependencies": {
     "@babel/core": "^7.20.0"
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "react-async-hook": "^4.0.0"
+  }
 }
