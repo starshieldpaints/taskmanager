@@ -29,23 +29,25 @@ export default function CreateTaskScreen({ navigation }) {
   const [showPicker, setShowPicker] = useState(false);
 
   useEffect(() => {
-    // superadmin sees admins
     if (role === 'superadmin') {
       (async () => {
-        const q = query(collection(db, 'users'), where('role', '==', 'admin'));
-        const snap = await getDocs(q);
-        setAdmins(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        const snap = await getDocs(query(collection(db, 'users'), where('role', '==', 'admin')));
+        setAdmins(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       })();
-    }
-    // admin/superadmin sees their users
-    if (role === 'admin' || role === 'superadmin') {
+
       (async () => {
-        const q = query(collection(db, 'users'), where('adminId', '==', user.uid));
-        const snap = await getDocs(q);
-        setUsers(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        const snap = await getDocs(query(collection(db, 'users'), where('role', '==', 'user')));
+        setUsers(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+      })();
+    } else if (role === 'admin') {
+      (async () => {
+        const snap = await getDocs(
+          query(collection(db, 'users'), where('adminId', '==', user.uid))
+        );
+        setUsers(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       })();
     }
-  }, []);
+  }, [role, user]);
 
   async function onSubmit() {
     const assigneeId = assigneeType === 'admin' ? selectedAdmin : selectedUser;

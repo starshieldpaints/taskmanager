@@ -29,8 +29,9 @@ export default function SuperAdminDashboard({ navigation }) {
                     const tasksSnap = await getDocs(
                         query(
                             collection(db, 'tasks'),
-                            where('assigneeType', '==', 'admin'),
-                            where('assigneeId', '==', adminId)
+                            where('assignedType', '==', 'admin'),
+                            where('assignedTo', '==', adminId)
+
                         )
                     );
 

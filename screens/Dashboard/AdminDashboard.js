@@ -20,8 +20,9 @@ export default function AdminDashboard({ navigation }) {
         const uid = auth.currentUser.uid;
         const q = query(
             collection(db, 'tasks'),
-            where('assigneeType', '==', 'admin'),
-            where('assigneeId', '==', uid)
+            where('assignedType', '==', 'admin'),
+            where('assignedTo', '==', uid)
+
         );
         const unsub = onSnapshot(q, (snap) => {
             setTasks(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
