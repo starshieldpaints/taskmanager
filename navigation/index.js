@@ -1,6 +1,7 @@
 // navigation/index.js
 import React, { useContext } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, ActivityIndicator } from 'react-native';
 import { AuthContext } from '../utils/auth';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
@@ -17,7 +18,13 @@ const Stack = createNativeStackNavigator();
 export default function RootNavigator() {
   const { user, role, loading } = useContext(AuthContext);
 
-  if (loading) return null;  // or a Splash screen
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#d32f2f" />
+      </View>
+    );
+  }
 
   if (!user) {
     return (
