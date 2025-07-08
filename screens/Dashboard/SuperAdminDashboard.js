@@ -31,6 +31,7 @@ export default function SuperAdminDashboard({ navigation }) {
                             collection(db, 'tasks'),
                             where('assignedType', '==', 'admin'),
                             where('assignedTo', '==', adminId)
+
                         )
                     );
 

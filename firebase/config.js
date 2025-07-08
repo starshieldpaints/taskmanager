@@ -16,13 +16,18 @@ const extra =
   process.env;
 
 const firebaseConfig = {
-  apiKey: extra.FIREBASE_API_KEY,
-  authDomain: extra.FIREBASE_AUTH_DOMAIN,
-  projectId: extra.FIREBASE_PROJECT_ID,
-  storageBucket: extra.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: extra.FIREBASE_MESSAGING_SENDER_ID,
-  appId: extra.FIREBASE_APP_ID,
-  measurementId: extra.FIREBASE_MEASUREMENT_ID,
+
+
+
+
+
+  apiKey: "AIzaSyD7GCjiwy7mDtvWK9vRPu5m2bzRbLcZWzw",
+  authDomain: "to-do-list-b831f.firebaseapp.com",
+  projectId: "to-do-list-b831f",
+  storageBucket: "to-do-list-b831f.firebasestorage.app",
+  messagingSenderId: "1045803774649",
+  appId: "1:1045803774649:web:1609b1efe7571daf4c6168",
+  measurementId: "G-619D6XP549",
 };
 
 // Initialize Firebase app
@@ -30,6 +35,7 @@ const app = initializeApp(firebaseConfig);
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
+
 
 // Initialize Firebase App Check in browser environments
 if (typeof window !== 'undefined') {
@@ -45,6 +51,7 @@ if (typeof window !== 'undefined') {
 
 // Export app and modular helpers
 export { app, firebase };
+
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
