@@ -4,6 +4,11 @@ import "firebase/compat/firestore";
 import "firebase/compat/storage";
 import Constants from 'expo-constants';
 
+// Environment variables are injected via app.config.js. Access them from
+// Constants.expoConfig.extra without destructuring to avoid name collisions
+const extra = Constants.expoConfig?.extra ?? {};
+
+
 // Environment variables are injected via app.config.js into Constants.expoConfig.extra
 
 const {
@@ -26,13 +31,13 @@ const {
   FIREBASE_APP_ID,
 } = Constants.expoConfig?.extra ?? {};
 const firebaseConfig = {
-  apiKey: FIREBASE_API_KEY,
-  authDomain: FIREBASE_AUTH_DOMAIN,
-  projectId: FIREBASE_PROJECT_ID,
-  storageBucket: FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
-  appId: FIREBASE_APP_ID,
-};
+  apiKey: extra.FIREBASE_API_KEY,
+  authDomain: extra.FIREBASE_AUTH_DOMAIN,
+  projectId: extra.FIREBASE_PROJECT_ID,
+  storageBucket: extra.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: extra.FIREBASE_MESSAGING_SENDER_ID,
+  appId: extra.FIREBASE_APP_ID,
+
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
