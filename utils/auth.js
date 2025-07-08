@@ -25,6 +25,7 @@ export function AuthProvider({ children }) {
                 } catch {
                     setRole('');
                 }
+
             } else {
                 setRole('');
             }
