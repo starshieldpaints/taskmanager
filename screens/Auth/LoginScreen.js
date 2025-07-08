@@ -1,13 +1,17 @@
+// screens/Auth/LoginScreen.js
 import React, { useState } from 'react';
 import {
   View,
-  TextInput,
-  Button,
   StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Text,
   ActivityIndicator,
-  Alert
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
-import { firebase } from '../../firebase/config';
+import { login } from '../../utils/auth';
 import { registerForPushNotificationsAsync } from '../../utils/notifications';
 
 export default function LoginScreen({ navigation }) {
@@ -16,26 +20,37 @@ export default function LoginScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    if (!email.trim() || !password) {
+      return Alert.alert('Validation', 'Please enter both email and password.');
+    }
+    setLoading(true);
     try {
-      setLoading(true);
-      await firebase.auth().signInWithEmailAndPassword(email, password);
+      const { user } = await login(email.trim(), password);
+      console.log('✅ Signed in:', user.uid);
       await registerForPushNotificationsAsync();
       navigation.replace('Tasks');
-    } catch (e) {
-      Alert.alert('Login Error', e.message);
+    } catch (err) {
+      console.error('🔴 Firebase login error:', err.code, err.message);
+      Alert.alert('Login Error', err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.select({ ios: 'padding', android: undefined })}
+    >
       <TextInput
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
         style={styles.input}
         autoCapitalize="none"
+        keyboardType="email-address"
+        autoCorrect={false}
+        editable={!loading}
       />
       <TextInput
         placeholder="Password"
@@ -43,17 +58,28 @@ export default function LoginScreen({ navigation }) {
         value={password}
         onChangeText={setPassword}
         style={styles.input}
+        autoCapitalize="none"
+        autoCorrect={false}
+        editable={!loading}
       />
+
       {loading ? (
-        <ActivityIndicator size="large" color="#d32f2f" />
+        <ActivityIndicator size="large" color="#d32f2f" style={styles.loader} />
       ) : (
-        <Button title="Login" onPress={handleLogin} color="#d32f2f" />
+        <>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, styles.registerButton]}
+            onPress={() => navigation.navigate('Register')}
+          >
+            <Text style={styles.buttonText}>Register</Text>
+          </TouchableOpacity>
+        </>
       )}
-      <Button
-        title="Register"
-        onPress={() => navigation.navigate('Register')}
-      />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -61,14 +87,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#fff'
+    padding: 24,
+    backgroundColor: '#fff',
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
+    marginBottom: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 6,
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: '#d32f2f',
+    paddingVertical: 14,
+    borderRadius: 6,
+    alignItems: 'center',
     marginBottom: 12,
-    padding: 10,
-    borderRadius: 4
-  }
+  },
+  registerButton: {
+    backgroundColor: '#555',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  loader: {
+    marginVertical: 20,
+  },
 });
