@@ -19,7 +19,7 @@ export default function TaskCard({ task, onPress, onLongPress, style }) {
         {task.description}
       </Text>
       <View style={styles.footer}>
-        <Text style={styles.status}>{task.status.toUpperCase()}</Text>
+        <Text style={styles.status}>{task.status?.toUpperCase() || ''}</Text>
         <Text style={styles.date}>
           {task.createdAt?.toDate().toLocaleDateString() || ''}
         </Text>

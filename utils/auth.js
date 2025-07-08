@@ -25,7 +25,6 @@ export function AuthProvider({ children }) {
                 } catch {
                     setRole('');
                 }
-
             } else {
                 setRole('');
             }
@@ -33,6 +32,7 @@ export function AuthProvider({ children }) {
         });
         return unsubscribe;
     }, []);
+
 
     return (
         <AuthContext.Provider value={{ user, role, loading }}>
