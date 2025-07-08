@@ -15,6 +15,38 @@ const extra =
   Constants.manifest?.extra ||
   process.env;
 
+
+// Environment variables are injected via app.config.js. Access them from
+// Constants.expoConfig.extra without destructuring to avoid name collisions
+const extra = Constants.expoConfig?.extra ?? {};
+
+
+// Environment variables are injected via app.config.js. Access them from
+// Constants.expoConfig.extra without destructuring to avoid name collisions
+const extra = Constants.expoConfig?.extra ?? {};
+
+
+// Environment variables are injected via app.config.js into Constants.expoConfig.extra
+
+const {
+  FIREBASE_API_KEY,
+  FIREBASE_AUTH_DOMAIN,
+  FIREBASE_PROJECT_ID,
+  FIREBASE_STORAGE_BUCKET,
+  FIREBASE_MESSAGING_SENDER_ID,
+  FIREBASE_APP_ID,
+} = Constants.expoConfig?.extra ?? {};
+
+// Environment variables are injected via app.config.js into Constants.expoConfig.extra
+
+const {
+  FIREBASE_API_KEY,
+  FIREBASE_AUTH_DOMAIN,
+  FIREBASE_PROJECT_ID,
+  FIREBASE_STORAGE_BUCKET,
+  FIREBASE_MESSAGING_SENDER_ID,
+  FIREBASE_APP_ID,
+} = Constants.expoConfig?.extra ?? {};
 const firebaseConfig = {
   apiKey: extra.FIREBASE_API_KEY,
   authDomain: extra.FIREBASE_AUTH_DOMAIN,
@@ -23,6 +55,7 @@ const firebaseConfig = {
   messagingSenderId: extra.FIREBASE_MESSAGING_SENDER_ID,
   appId: extra.FIREBASE_APP_ID,
 };
+
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
