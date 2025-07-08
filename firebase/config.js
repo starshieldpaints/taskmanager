@@ -1,5 +1,8 @@
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
 import Constants from 'expo-constants';
-import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
@@ -11,18 +14,21 @@ const extra =
   Constants.manifest?.extra ||
   process.env;
 
+
 const firebaseConfig = {
-  apiKey: extra.FIREBASE_API_KEY,
-  authDomain: extra.FIREBASE_AUTH_DOMAIN,
-  projectId: extra.FIREBASE_PROJECT_ID,
-  storageBucket: extra.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: extra.FIREBASE_MESSAGING_SENDER_ID,
-  appId: extra.FIREBASE_APP_ID,
-  measurementId: extra.FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyD7GCjiwy7mDtvWK9vRPu5m2bzRbLcZWzw",
+  authDomain: "to-do-list-b831f.firebaseapp.com",
+  projectId: "to-do-list-b831f",
+  storageBucket: "to-do-list-b831f.firebasestorage.app",
+  messagingSenderId: "1045803774649",
+  appId: "1:1045803774649:web:1609b1efe7571daf4c6168",
+  measurementId: "G-619D6XP549",
 };
 
-// Initialize Firebase app
-const app = initializeApp(firebaseConfig);
+// Initialize once for both compat and modular APIs
+const app = firebase.apps.length
+  ? firebase.app()
+  : firebase.initializeApp(firebaseConfig);
 
 // Initialize Firebase App Check in browser environments
 if (typeof window !== 'undefined') {
@@ -31,13 +37,15 @@ if (typeof window !== 'undefined') {
       provider: new ReCaptchaV3Provider(extra.RECAPTCHA_KEY),
       isTokenAutoRefreshEnabled: true,
     });
-  } catch {
-    // ignore duplicate initialization
+  } catch (err) {
+    // ignore duplicate initialization errors
   }
 }
 
-// Export app and modular helpers
-export { app };
+// Export compat instance for existing code
+export { firebase };
+
+// Export modular helpers for new code
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
