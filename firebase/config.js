@@ -1,8 +1,5 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import 'firebase/compat/storage';
 import Constants from 'expo-constants';
+import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
@@ -14,8 +11,8 @@ const extra =
   Constants.manifest?.extra ||
   process.env;
 
-
 const firebaseConfig = {
+
   apiKey: "AIzaSyD7GCjiwy7mDtvWK9vRPu5m2bzRbLcZWzw",
   authDomain: "to-do-list-b831f.firebaseapp.com",
   projectId: "to-do-list-b831f",
@@ -25,10 +22,8 @@ const firebaseConfig = {
   measurementId: "G-619D6XP549",
 };
 
-// Initialize once for both compat and modular APIs
-const app = firebase.apps.length
-  ? firebase.app()
-  : firebase.initializeApp(firebaseConfig);
+// Initialize Firebase app
+const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase App Check in browser environments
 if (typeof window !== 'undefined') {
@@ -37,15 +32,13 @@ if (typeof window !== 'undefined') {
       provider: new ReCaptchaV3Provider(extra.RECAPTCHA_KEY),
       isTokenAutoRefreshEnabled: true,
     });
-  } catch (err) {
-    // ignore duplicate initialization errors
+  } catch {
+    // ignore duplicate initialization
   }
 }
 
-// Export compat instance for existing code
-export { firebase };
-
-// Export modular helpers for new code
+// Export app and modular helpers
+export { app };
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);

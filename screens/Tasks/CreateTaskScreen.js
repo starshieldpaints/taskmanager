@@ -2,7 +2,15 @@ import React, { useEffect, useState, useContext } from 'react';
 import { View, StyleSheet, TextInput, Platform, ScrollView } from 'react-native';
 import { Text, Button, RadioButton } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { getFirestore, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { AuthContext } from '../../utils/auth';
 import sendNotification from '../../utils/sendNotification';
 
@@ -51,7 +59,7 @@ export default function CreateTaskScreen({ navigation }) {
       createdBy: user.uid,
       assignedType: assigneeType,
       assignedTo: assigneeId,
-      createdAt: new Date()
+      createdAt: serverTimestamp(),
     });
 
     // notify the assignee
