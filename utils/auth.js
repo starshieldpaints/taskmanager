@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { firebase, auth, db } from '../firebase/config';
+import { auth, db } from '../firebase/config';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -21,9 +21,9 @@ export function AuthProvider({ children }) {
                 // Load role from Firestore
                 try {
                     const snap = await getDoc(doc(db, 'users', u.uid));
-                    setRole(snap.exists() ? snap.data().role || '' : '');
+                    setRole(snap.exists() ? snap.data().role : 'user');
                 } catch {
-                    setRole('');
+                    setRole('user');
                 }
             } else {
                 setRole('');
