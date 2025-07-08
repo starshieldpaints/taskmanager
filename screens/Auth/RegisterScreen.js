@@ -51,6 +51,7 @@ export default function RegisterScreen({ navigation }) {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert('Permission required to access photo library');
+
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -72,6 +73,7 @@ export default function RegisterScreen({ navigation }) {
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       quality: 0.5,
+
     });
     if (!result.canceled) {
       setImage(result.assets[0]);
@@ -196,6 +198,7 @@ export default function RegisterScreen({ navigation }) {
       <TouchableOpacity onPress={takePhoto} style={styles.photoButton}>
         <Text style={{ color: '#fff' }}>Take Photo</Text>
       </TouchableOpacity>
+
       {image && (
         <Image source={{ uri: image.uri }} style={{ width: 80, height: 80, marginBottom: 12 }} />
       )}
