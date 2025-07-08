@@ -33,6 +33,7 @@ export function AuthProvider({ children }) {
         return unsubscribe;
     }, []);
 
+
     return (
         <AuthContext.Provider value={{ user, role, loading }}>
             {children}
