@@ -4,6 +4,7 @@ import 'firebase/compat/firestore';
 import 'firebase/compat/storage';
 import Constants from 'expo-constants';
 import { getAuth } from 'firebase/auth';
+
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
@@ -39,6 +40,7 @@ if (typeof window !== 'undefined') {
     // ignore duplicate initialization errors
   }
 }
+
 
 // Export compat instance for existing code
 export { firebase };
