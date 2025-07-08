@@ -1,5 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { firebase } from '../firebase/config';
+import { firebase, auth, db } from '../firebase/config';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 export const AuthContext = createContext();
 
@@ -12,17 +14,18 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Listen for auth state changes
-        const unsubscribe = firebase.auth().onAuthStateChanged(async u => {
+        // Listen for auth state changes using modular API
+        const unsubscribe = onAuthStateChanged(auth, async (u) => {
             setUser(u);
             if (u) {
                 // Load role from Firestore
-                const snap = await firebase
-                    .firestore()
-                    .collection('users')
-                    .doc(u.uid)
-                    .get();
-                setRole(snap.data()?.role || '');
+                try {
+                    const snap = await getDoc(doc(db, 'users', u.uid));
+                    setRole(snap.exists() ? snap.data().role || '' : '');
+                } catch {
+                    setRole('');
+                }
+
             } else {
                 setRole('');
             }
@@ -39,14 +42,12 @@ export function AuthProvider({ children }) {
 }
 
 import {
-    onAuthStateChanged,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     sendEmailVerification,
     reload,
     signOut,
 } from 'firebase/auth';
-import { auth } from '../firebase/config';
 
 /** Subscribe to auth changes; returns unsubscribe() */
 export function listenAuth(cb) {
