@@ -16,11 +16,6 @@ const extra =
   process.env;
 
 const firebaseConfig = {
-
-
-
-
-
   apiKey: "AIzaSyD7GCjiwy7mDtvWK9vRPu5m2bzRbLcZWzw",
   authDomain: "to-do-list-b831f.firebaseapp.com",
   projectId: "to-do-list-b831f",
@@ -51,7 +46,6 @@ if (typeof window !== 'undefined') {
 
 // Export app and modular helpers
 export { app, firebase };
-
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);

@@ -11,7 +11,6 @@ import {
 import { RadioButton } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
-
   collection,
   addDoc,
   query,
@@ -20,7 +19,6 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '../../firebase/config';
-
 import { AuthContext } from '../../utils/auth';
 import sendNotification from '../../utils/sendNotification';
 
@@ -50,7 +48,6 @@ export default function CreateTaskScreen({ navigation }) {
       })();
     } else if (role === 'admin') {
       (async () => {
-
         const snap = await getDocs(
           query(collection(db, 'users'), where('adminId', '==', user.uid))
         );
