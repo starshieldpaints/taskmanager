@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { AuthContext } from '../utils/auth';
-import { firebase } from '../firebase/config';
+import { auth } from '../firebase/config';
+import { signOut } from 'firebase/auth';
 
 export default function ProfileScreen() {
     const { user, role } = useContext(AuthContext);
 
     const handleLogout = async () => {
-        await firebase.auth().signOut();
+        await signOut(auth);
     };
 
     return (

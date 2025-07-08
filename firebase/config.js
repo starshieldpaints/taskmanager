@@ -4,6 +4,10 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
 
 // Resolve env vars from Expo config or process.env for Node tools
 const extra =
@@ -28,6 +32,10 @@ const firebaseConfig = {
 
 // Initialize Firebase app
 const app = initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
 
 // Initialize Firebase App Check in browser environments
 if (typeof window !== 'undefined') {
@@ -42,7 +50,8 @@ if (typeof window !== 'undefined') {
 }
 
 // Export app and modular helpers
-export { app };
+export { app, firebase };
+
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
