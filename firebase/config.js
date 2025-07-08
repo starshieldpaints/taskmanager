@@ -6,6 +6,18 @@ import Constants from 'expo-constants';
 
 // Environment variables are injected via app.config.js. Access them from
 // Constants.expoConfig.extra without destructuring to avoid name collisions
+// Try multiple sources so the app works in Expo Go, web, or a native build
+// `expoConfig.extra` is available in development. `manifest.extra` covers
+// EAS build environments. Finally, fall back to `process.env` when running in
+// Node-based tooling.
+const extra =
+  Constants.expoConfig?.extra ||
+  Constants.manifest?.extra ||
+  process.env;
+
+
+// Environment variables are injected via app.config.js. Access them from
+// Constants.expoConfig.extra without destructuring to avoid name collisions
 const extra = Constants.expoConfig?.extra ?? {};
 
 
