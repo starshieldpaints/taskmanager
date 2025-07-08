@@ -40,6 +40,7 @@ export function AuthProvider({ children }) {
     );
 }
 
+
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,

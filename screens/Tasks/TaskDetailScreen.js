@@ -10,17 +10,16 @@ import {
 } from 'react-native';
 import { firebase } from '../../firebase/config';
 import sendNotification from '../../utils/sendNotification';
-import { AuthContext } from '../../utils/auth';
-import CommentsSection from './CommentsSection';
-import ChatRoom from '../../components/ChatRoom';
-import { logAction } from '../../utils/audit';
 
-export default function TaskDetailScreen({ route }) {
+import { AuthContext } from '../../utils/auth';
+import sendNotification from '../../utils/sendNotification';
+
+export default function TaskDetailScreen({ route, navigation }) {
   const { taskId } = route.params;
-  const { user } = useContext(AuthContext);
+  const db = getFirestore();
+  const { user, role } = useContext(AuthContext);
+
   const [task, setTask] = useState(null);
-  const [remarks, setRemarks] = useState('');
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const sub = firebase
@@ -64,55 +63,42 @@ export default function TaskDetailScreen({ route }) {
       Alert.alert('Error', e.message);
     } finally {
       setLoading(false);
-    }
-  };
 
-  if (!task) {
-    return (
-      <ActivityIndicator
-        style={styles.center}
-        size="large"
-        color="#d32f2f"
-      />
-    );
+    }
+
+    navigation.goBack();
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{task.title}</Text>
-      <Text style={styles.desc}>{task.description}</Text>
-      <TextInput
-        placeholder="Add remarks…"
-        style={styles.input}
-        onChangeText={setRemarks}
-      />
-      {['accept', 'reject', 'complete'].map((act) => (
-        <Button
-          key={act}
-          title={act.charAt(0).toUpperCase() + act.slice(1)}
-          onPress={() => updateStatus(act)}
-          color="#d32f2f"
-          disabled={loading}
+    <ScrollView style={s.container}>
+      <Card>
+        <Card.Title
+          title={task.title}
+          subtitle={`Status: ${task.status.toUpperCase()}`}
         />
-      ))}
-
-      <CommentsSection taskId={taskId} />
-
-      <ChatRoom taskId={taskId} />
-    </View>
+        <Card.Content>
+          <Text>Description:</Text>
+          <Text>{task.desc}</Text>
+          <Text>Deadline: {task.deadline.toDate().toLocaleString()}</Text>
+          <Text>Assigned by: {task.createdBy}</Text>
+          <Text>Assigned to: {task.assignedTo}</Text>
+        </Card.Content>
+        <Card.Actions>
+          {isAssignee && task.status === 'todo' && (
+            <>
+              <Button onPress={() => changeStatus('inprogress')}>Start</Button>
+              <Button onPress={() => changeStatus('done')}>Complete</Button>
+            </>
+          )}
+          {isCreator && task.status === 'todo' && (
+            <Button onPress={() => changeStatus('cancelled')}>Cancel</Button>
+          )}
+        </Card.Actions>
+      </Card>
+    </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
-  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
-  desc: { fontSize: 16, marginBottom: 10 },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginVertical: 10,
-    padding: 10,
-    borderRadius: 4
-  },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' }
+const s = StyleSheet.create({
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
 });
