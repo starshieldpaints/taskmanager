@@ -80,11 +80,22 @@ export default function RegisterScreen({ navigation }) {
     }
   };
 
+  const validateEmail = (val) => /.+@.+\..+/.test(val);
+
   const handleRegister = async () => {
     if (!firstName || !lastName || !designation || !phone || !email || !password) {
       Alert.alert('Error', 'Please fill all fields');
       return;
     }
+    if (!validateEmail(email)) {
+      Alert.alert('Error', 'Enter a valid email address');
+      return;
+    }
+    if (password.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters');
+      return;
+    }
+
     if (!verificationId) {
       Alert.alert('Error', 'Verify phone number first');
       return;
