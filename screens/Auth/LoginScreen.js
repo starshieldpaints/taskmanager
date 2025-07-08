@@ -28,7 +28,6 @@ export default function LoginScreen({ navigation }) {
       const { user } = await login(email.trim(), password);
       console.log('✅ Signed in:', user.uid);
       await registerForPushNotificationsAsync();
-      navigation.replace('Tasks');
     } catch (err) {
       console.error('🔴 Firebase login error:', err.code, err.message);
       Alert.alert('Login Error', err.message);

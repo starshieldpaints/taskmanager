@@ -9,6 +9,7 @@ import {
   Alert
 } from 'react-native';
 import { firebase } from '../../firebase/config';
+import sendNotification from '../../utils/sendNotification';
 import { AuthContext } from '../../utils/auth';
 import CommentsSection from './CommentsSection';
 import ChatRoom from '../../components/ChatRoom';
@@ -52,11 +53,11 @@ export default function TaskDetailScreen({ route }) {
             at: firebase.firestore.FieldValue.serverTimestamp()
           })
         });
-      await firebase.functions().httpsCallable('sendNotification')({
+      await sendNotification({
         userId: task.createdBy,
         type: action,
         taskId,
-        message: `${user.email} ${action}ed "${task.title}"`
+        message: `${user.email} ${action}ed "${task.title}"`,
       });
       await logAction(`${action}Task`, { taskId, action });
     } catch (e) {

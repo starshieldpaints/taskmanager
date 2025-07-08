@@ -11,6 +11,7 @@ import {
 import { firebase } from '../../firebase/config';
 import { AuthContext } from '../../utils/auth';
 import { logAction } from '../../utils/audit';
+import sendNotification from '../../utils/sendNotification';
 
 export default function AssignTaskScreen() {
     const { role } = useContext(AuthContext);
@@ -44,11 +45,11 @@ export default function AssignTaskScreen() {
                 status: 'todo',
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
-            await firebase.functions().httpsCallable('sendNotification')({
+            await sendNotification({
                 userId: assigneeId,
                 type: 'assignment',
                 taskId: doc.id,
-                message: `New Task: ${title}`
+                message: `New Task: ${title}`,
             });
             await logAction('assignTask', { taskId: doc.id, to: assigneeId });
             Alert.alert('Assigned!');
