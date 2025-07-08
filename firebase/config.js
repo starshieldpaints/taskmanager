@@ -1,65 +1,13 @@
-// import firebase from "firebase/compat/app";
-// import "firebase/compat/auth";
-// import "firebase/compat/firestore";
-// import "firebase/compat/storage";
-// import Constants from 'expo-constants';
-
-// // Environment variables are injected via app.config.js. Access them from
-// // Constants.expoConfig.extra without destructuring to avoid name collisions
-// // Try multiple sources so the app works in Expo Go, web, or a native build
-// // `expoConfig.extra` is available in development. `manifest.extra` covers
-// // EAS build environments. Finally, fall back to `process.env` when running in
-// // Node-based tooling.
-// const extra =
-//   Constants.expoConfig?.extra ||
-//   Constants.manifest?.extra ||
-//   process.env;
-
-
-// // Environment variables are injected via app.config.js. Access them from
-// // Constants.expoConfig.extra without destructuring to avoid name collisions
-
-
-// // Environment variables are injected via app.config.js. Access them from
-// // Constants.expoConfig.extra without destructuring to avoid name collisions
-
-
-// // Environment variables are injected via app.config.js into Constants.expoConfig.extra
-
-// // Environment variables are injected via app.config.js into Constants.expoConfig.extra
-
-// const {
-//   FIREBASE_API_KEY,
-//   FIREBASE_AUTH_DOMAIN,
-//   FIREBASE_PROJECT_ID,
-//   FIREBASE_STORAGE_BUCKET,
-//   FIREBASE_MESSAGING_SENDER_ID,
-//   FIREBASE_APP_ID,
-// } = Constants.expoConfig?.extra ?? {};
-// const firebaseConfig = {
-
-//   apiKey: "AIzaSyD7GCjiwy7mDtvWK9vRPu5m2bzRbLcZWzw",
-//   authDomain: "to-do-list-b831f.firebaseapp.com",
-//   projectId: "to-do-list-b831f",
-//   storageBucket: "to-do-list-b831f.firebasestorage.app",
-//   messagingSenderId: "1045803774649",
-//   appId: "1:1045803774649:web:1609b1efe7571daf4c6168",
-// }
-
-
-// if (!firebase.apps.length) {
-//   firebase.initializeApp(firebaseConfig);
-// }
-
-// export { firebase };
-
-// firebase/config.js
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
 import Constants from 'expo-constants';
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, initializeAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
+// Resolve env vars from Expo config or process.env for Node tools
 const extra =
   Constants.expoConfig?.extra ||
   Constants.manifest?.extra ||
@@ -74,8 +22,15 @@ const firebaseConfig = {
   appId: extra.FIREBASE_APP_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+// Initialize once for both compat and modular APIs
+const app = firebase.apps.length
+  ? firebase.app()
+  : firebase.initializeApp(firebaseConfig);
 
+// Export compat instance for existing code
+export { firebase };
+
+// Export modular helpers for new code
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
