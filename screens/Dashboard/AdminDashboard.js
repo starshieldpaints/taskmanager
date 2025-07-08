@@ -22,6 +22,7 @@ export default function AdminDashboard({ navigation }) {
             collection(db, 'tasks'),
             where('assignedType', '==', 'admin'),
             where('assignedTo', '==', uid)
+
         );
         const unsub = onSnapshot(q, (snap) => {
             setTasks(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
