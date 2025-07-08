@@ -1,6 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SuperAdminDashboard from '../screens/Dashboard/SuperAdminDashboard';
+import SuperAdminDashboard from '../screens/Dashboard/SuperAdminDashboard.js';
 
 import TaskDetailScreen from '../screens/Tasks/TaskDetailScreen';
 
