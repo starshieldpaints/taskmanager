@@ -9,6 +9,11 @@ import Constants from 'expo-constants';
 const extra = Constants.expoConfig?.extra ?? {};
 
 
+// Environment variables are injected via app.config.js. Access them from
+// Constants.expoConfig.extra without destructuring to avoid name collisions
+const extra = Constants.expoConfig?.extra ?? {};
+
+
 // Environment variables are injected via app.config.js into Constants.expoConfig.extra
 
 const {
@@ -37,6 +42,7 @@ const firebaseConfig = {
   storageBucket: extra.FIREBASE_STORAGE_BUCKET,
   messagingSenderId: extra.FIREBASE_MESSAGING_SENDER_ID,
   appId: extra.FIREBASE_APP_ID,
+};
 
 
 if (!firebase.apps.length) {
