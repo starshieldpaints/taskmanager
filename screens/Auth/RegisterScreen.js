@@ -48,15 +48,32 @@ export default function RegisterScreen({ navigation }) {
   };
 
   const pickImage = async () => {
-    const permission = await ImagePicker.requestCameraPermissionsAsync();
-    if (!permission.granted) {
-      Alert.alert('Permission required to access camera');
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission required to access photo library');
+
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      quality: 0.5
+      quality: 0.5,
+    });
+    if (!result.canceled) {
+      setImage(result.assets[0]);
+    }
+  };
+
+  const takePhoto = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission required to access camera');
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 0.5,
+
     });
     if (!result.canceled) {
       setImage(result.assets[0]);
@@ -178,6 +195,10 @@ export default function RegisterScreen({ navigation }) {
       <TouchableOpacity onPress={pickImage} style={styles.photoButton}>
         <Text style={{ color: '#fff' }}>Pick Profile Photo</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={takePhoto} style={styles.photoButton}>
+        <Text style={{ color: '#fff' }}>Take Photo</Text>
+      </TouchableOpacity>
+
       {image && (
         <Image source={{ uri: image.uri }} style={{ width: 80, height: 80, marginBottom: 12 }} />
       )}

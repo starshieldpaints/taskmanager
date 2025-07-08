@@ -6,7 +6,9 @@ import LoginScreen from '../screens/Auth/LoginScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
 import VerifyScreen from '../screens/Auth/VerifyScreen';
 // import your other navigators / screens here:
-import TaskTabs from './TaskTabs.js';            // e.g. your user tabs
+// Use extensionless import so Metro can resolve the file on all platforms
+import TaskTabs from './TaskTabs';               // e.g. your user tabs
+
 import AdminNavigator from './AdminNavigator';       // your admin stack
 import SuperAdminNavigator from './SuperAdminNavigator'; // your superadmin stack
 
