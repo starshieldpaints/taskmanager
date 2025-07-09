@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
-import { Text, Button, IconButton } from 'react-native-paper';
-
+import { Text, Button } from 'react-native-paper';
 import { doc, getDoc } from 'firebase/firestore';
 import { AuthContext } from '../utils/auth';
 import { db } from '../firebase/config';
@@ -9,6 +8,7 @@ import { db } from '../firebase/config';
 export default function ProfileScreen({ navigation }) {
     const { user, role, signOut } = useContext(AuthContext);
     const [profile, setProfile] = useState(null);
+
 
     useEffect(() => {
         (async () => {
@@ -19,19 +19,7 @@ export default function ProfileScreen({ navigation }) {
         })();
     }, [user]);
 
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-            headerRight: () => (
-                <IconButton
-                    icon="pencil"
-                    size={24}
-                    iconColor="#fff"
-                    onPress={() => navigation.navigate('EditProfile')}
-                />
 
-            )
-        });
-    }, [navigation]);
 
     return (
         <View style={styles.container}>
@@ -43,7 +31,6 @@ export default function ProfileScreen({ navigation }) {
             <Text style={styles.text}>Last Name: {profile?.lastName}</Text>
             <Text style={styles.text}>Phone: {profile?.phone}</Text>
             <Text style={styles.text}>Role: {role}</Text>
-
             <Button
                 mode="contained"
                 onPress={signOut}

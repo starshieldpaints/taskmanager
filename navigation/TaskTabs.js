@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Button } from 'react-native-paper';
+import { Button, IconButton } from 'react-native-paper';
 import TaskStack from './TaskStack';
 import ProfileStack from './ProfileStack';
 import { AuthContext } from '../utils/auth';
@@ -25,10 +25,9 @@ export default function TaskTabs() {
           headerRight: () =>
             ['admin', 'superadmin'].includes(role) ? (
               <Button
-                mode="contained"
-                onPress={() => navigation.navigate('Tasks', { screen: 'CreateTask' })}
-                style={{ backgroundColor: '#D32F2F' }}
+                mode="text"
                 labelStyle={{ color: '#fff' }}
+                onPress={() => navigation.navigate('Tasks', { screen: 'CreateTask' })}
 
               >
                 Create
@@ -36,7 +35,20 @@ export default function TaskTabs() {
             ) : null,
         })}
       />
-      <Tab.Screen name="Profile" component={ProfileStack} />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStack}
+        options={({ navigation }) => ({
+          headerRight: () => (
+            <IconButton
+              icon="pencil"
+              size={24}
+              iconColor="#fff"
+              onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })}
+            />
+          )
+        })}
+      />
 
     </Tab.Navigator>
   );

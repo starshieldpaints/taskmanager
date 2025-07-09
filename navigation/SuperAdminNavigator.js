@@ -22,14 +22,14 @@ export default function SuperAdminNavigator() {
         name="SuperAdminDash"
         component={SuperAdminDashboard}
         options={({ navigation }) => ({
-          title: 'Super Admin Dashboard',
+          title: 'Tasks',
           headerRight: () =>
             role === 'admin' || role === 'superadmin' ? (
               <Button
-                mode="contained"
-                onPress={() => navigation.navigate('CreateTask')}
-                style={{ backgroundColor: '#D32F2F' }}
+                mode="text"
                 labelStyle={{ color: '#fff' }}
+                onPress={() => navigation.navigate('CreateTask')}
+
               >
                 Create
               </Button>
@@ -52,7 +52,6 @@ export default function SuperAdminNavigator() {
         component={EditProfileScreen}
         options={{ title: 'Edit Profile' }}
       />
-
     </Stack.Navigator>
   );
 }

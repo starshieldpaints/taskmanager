@@ -23,14 +23,14 @@ export default function AdminNavigator() {
         name="AdminDash"
         component={AdminDashboard}
         options={({ navigation }) => ({
-          title: 'Admin Dashboard',
+          title: 'Tasks',
           headerRight: () =>
             role === 'admin' || role === 'superadmin' ? (
               <Button
-                mode="contained"
-                onPress={() => navigation.navigate('CreateTask')}
-                style={{ backgroundColor: '#D32F2F' }}
+                mode="text"
                 labelStyle={{ color: '#fff' }}
+                onPress={() => navigation.navigate('CreateTask')}
+
               >
                 Create
               </Button>
