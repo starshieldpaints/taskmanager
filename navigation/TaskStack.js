@@ -1,16 +1,14 @@
 import React, { useContext } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button } from 'react-native-paper';
-import AdminDashboard from '../screens/Dashboard/AdminDashboard';
-import CreateTaskScreen from '../screens/Tasks/CreateTaskScreen';
-import AssignTaskScreen from '../screens/Tasks/AssignTaskScreen';
-import TaskDetailScreen from '../screens/Tasks/TaskDetailScreen';
-import EditProfileScreen from '../screens/Profile/EditProfileScreen';
 import { AuthContext } from '../utils/auth';
+import TaskBoard from '../screens/Tasks/TaskBoard';
+import CreateTaskScreen from '../screens/Tasks/CreateTaskScreen';
+import TaskDetailScreen from '../screens/Tasks/TaskDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function AdminNavigator() {
+export default function TaskStack() {
   const { role } = useContext(AuthContext);
   return (
     <Stack.Navigator
@@ -20,17 +18,13 @@ export default function AdminNavigator() {
       }}
     >
       <Stack.Screen
-        name="AdminDash"
-        component={AdminDashboard}
+        name="TaskBoard"
+        component={TaskBoard}
         options={({ navigation }) => ({
           title: 'Tasks',
           headerRight: () =>
             role === 'admin' || role === 'superadmin' ? (
-              <Button
-                mode="text"
-                labelStyle={{ color: '#fff' }}
-                onPress={() => navigation.navigate('CreateTask')}
-              >
+              <Button onPress={() => navigation.navigate('CreateTask')} color="#fff">
                 Create
               </Button>
             ) : null,
@@ -41,16 +35,10 @@ export default function AdminNavigator() {
         component={CreateTaskScreen}
         options={{ title: 'Create Task' }}
       />
-      <Stack.Screen name="AssignTask" component={AssignTaskScreen} />
       <Stack.Screen
         name="TaskDetail"
         component={TaskDetailScreen}
         options={{ title: 'Task Detail' }}
-      />
-      <Stack.Screen
-        name="EditProfile"
-        component={EditProfileScreen}
-        options={{ title: 'Edit Profile' }}
       />
     </Stack.Navigator>
   );

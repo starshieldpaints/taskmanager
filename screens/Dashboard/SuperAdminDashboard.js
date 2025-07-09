@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
     View,
     SectionList,
@@ -6,30 +6,33 @@ import {
     StyleSheet,
     ActivityIndicator
 } from 'react-native';
-import { firebase } from '../../firebase/config';
+import { FAB } from 'react-native-paper';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase/config';
+import { AuthContext } from '../../utils/auth';
 import TaskCard from '../../components/TaskCard';
 
-export default function SuperAdminDashboard() {
+export default function SuperAdminDashboard({ navigation }) {
+    const { role } = useContext(AuthContext);
     const [sections, setSections] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         (async () => {
-            const adminsSnap = await firebase
-                .firestore()
-                .collection('users')
-                .where('role', '==', 'admin')
-                .get();
+            const adminsSnap = await getDocs(
+                query(collection(db, 'users'), where('role', '==', 'admin'))
+            );
 
             const secs = await Promise.all(
                 adminsSnap.docs.map(async (adminDoc) => {
                     const adminId = adminDoc.id;
-                    const tasksSnap = await firebase
-                        .firestore()
-                        .collection('tasks')
-                        .where('assigneeType', '==', 'admin')
-                        .where('assigneeId', '==', adminId)
-                        .get();
+                    const tasksSnap = await getDocs(
+                        query(
+                            collection(db, 'tasks'),
+                            where('assignedType', '==', 'admin'),
+                            where('assignedTo', '==', adminId)
+                        )
+                    );
 
                     return {
                         title: adminDoc.data().email,
@@ -63,6 +66,14 @@ export default function SuperAdminDashboard() {
                 )}
                 renderItem={({ item }) => <TaskCard task={item} />}
             />
+            {(role === 'admin' || role === 'superadmin') && (
+                <FAB
+                    style={styles.fab}
+                    icon="plus"
+                    label="Create Task"
+                    onPress={() => navigation.navigate('CreateTask')}
+                />
+            )}
         </View>
     );
 }
@@ -75,5 +86,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         backgroundColor: '#eee',
         padding: 8
-    }
+    },
+    fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#d32f2f' }
 });

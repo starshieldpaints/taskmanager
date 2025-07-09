@@ -6,7 +6,8 @@ import {
   StyleSheet,
   ActivityIndicator
 } from 'react-native';
-import { firebase } from '../../firebase/config';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebase/config';
 import TaskCard from '../../components/TaskCard';
 
 export default function TaskBoard({ navigation }) {
@@ -14,19 +15,17 @@ export default function TaskBoard({ navigation }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = firebase
-      .firestore()
-      .collection('tasks')
-      .onSnapshot(
-        (snap) => {
-          setTasks(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-          setLoading(false);
-        },
-        (err) => {
-          console.warn(err);
-          setLoading(false);
-        }
-      );
+    const unsub = onSnapshot(
+      collection(db, 'tasks'),
+      (snap) => {
+        setTasks(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+        setLoading(false);
+      },
+      (err) => {
+        console.warn(err);
+        setLoading(false);
+      }
+    );
     return unsub;
   }, []);
 
