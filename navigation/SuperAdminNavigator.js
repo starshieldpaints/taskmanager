@@ -34,6 +34,7 @@ export default function SuperAdminNavigator() {
                 Create
               </Button>
             ) : null,
+
         })}
       />
       <Stack.Screen
@@ -51,6 +52,7 @@ export default function SuperAdminNavigator() {
         component={EditProfileScreen}
         options={{ title: 'Edit Profile' }}
       />
+
     </Stack.Navigator>
   );
 }

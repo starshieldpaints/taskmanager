@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { Text, Button, IconButton } from 'react-native-paper';
+
 import { doc, getDoc } from 'firebase/firestore';
 import { AuthContext } from '../utils/auth';
 import { db } from '../firebase/config';
@@ -27,6 +28,7 @@ export default function ProfileScreen({ navigation }) {
                     iconColor="#fff"
                     onPress={() => navigation.navigate('EditProfile')}
                 />
+
             )
         });
     }, [navigation]);
@@ -41,6 +43,7 @@ export default function ProfileScreen({ navigation }) {
             <Text style={styles.text}>Last Name: {profile?.lastName}</Text>
             <Text style={styles.text}>Phone: {profile?.phone}</Text>
             <Text style={styles.text}>Role: {role}</Text>
+
             <Button
                 mode="contained"
                 onPress={signOut}

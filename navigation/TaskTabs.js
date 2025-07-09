@@ -29,6 +29,7 @@ export default function TaskTabs() {
                 onPress={() => navigation.navigate('Tasks', { screen: 'CreateTask' })}
                 style={{ backgroundColor: '#D32F2F' }}
                 labelStyle={{ color: '#fff' }}
+
               >
                 Create
               </Button>
@@ -36,6 +37,7 @@ export default function TaskTabs() {
         })}
       />
       <Tab.Screen name="Profile" component={ProfileStack} />
+
     </Tab.Navigator>
   );
 }
