@@ -8,7 +8,15 @@ import {
     ActivityIndicator,
     Alert
 } from 'react-native';
-import { firebase } from '../../firebase/config';
+import { auth, db } from '../../firebase/config';
+import {
+    collection,
+    query,
+    where,
+    onSnapshot,
+    addDoc,
+    serverTimestamp
+} from 'firebase/firestore';
 import { AuthContext } from '../../utils/auth';
 import { logAction } from '../../utils/audit';
 import sendNotification from '../../utils/sendNotification';
@@ -23,11 +31,11 @@ export default function AssignTaskScreen() {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const q = firebase
-            .firestore()
-            .collection('users')
-            .where('role', '==', assigneeType);
-        return q.onSnapshot((snap) =>
+        const q = query(
+            collection(db, 'users'),
+            where('role', '==', assigneeType)
+        );
+        return onSnapshot(q, (snap) =>
             setList(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
         );
     }, [assigneeType]);
@@ -35,23 +43,23 @@ export default function AssignTaskScreen() {
     const assign = async () => {
         try {
             setLoading(true);
-            const { uid } = firebase.auth().currentUser;
-            const doc = await firebase.firestore().collection('tasks').add({
+            const { uid } = auth.currentUser;
+            const docRef = await addDoc(collection(db, 'tasks'), {
                 title,
                 description: desc,
                 assigneeType,
                 assigneeId,
                 createdBy: uid,
                 status: 'todo',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                createdAt: serverTimestamp()
             });
             await sendNotification({
                 userId: assigneeId,
                 type: 'assignment',
-                taskId: doc.id,
+                taskId: docRef.id,
                 message: `New Task: ${title}`,
             });
-            await logAction('assignTask', { taskId: doc.id, to: assigneeId });
+            await logAction('assignTask', { taskId: docRef.id, to: assigneeId });
             Alert.alert('Assigned!');
         } catch (e) {
             Alert.alert('Error', e.message);
