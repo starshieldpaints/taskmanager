@@ -1,6 +1,13 @@
 
 export default ({ config }) => ({
   ...config,
+  expo: {
+    name: "TaskManagerApp",
+    slug: "taskmanagerapp",
+    owner: "starshield",
+    version: "1.0.0",
+
+  },
   extra: {
     FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
     FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
@@ -11,4 +18,13 @@ export default ({ config }) => ({
     FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID,
     RECAPTCHA_KEY: process.env.RECAPTCHA_KEY,
   },
+  plugins: [
+    "expo-build-properties",
+    "expo-router",
+    "@react-native-firebase/app",
+    "@react-native-firebase/auth"
+  ],
+  eas: {
+    projectId: "a91633d0-3bfe-466b-9058-45b8f77be384"
+  }
 });

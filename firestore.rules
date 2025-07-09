@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function isAuth() { return request.auth != null; }
+    function roleOf(uid) {
+      return get(/databases/$(db)/documents/users/$(uid)).data.role;
+    }
+
+    match /users/{uid} {
+      allow create: if isAuth();
+      allow read, update: if isAuth() && request.auth.uid == uid;
+    }
+    match /tasks/{tid} {
+      allow read: if isAuth();
+      allow write: if isAuth() && roleOf(request.auth.uid) in ['admin','superadmin'];
+    }
+    match /notifications/{n} {
+      allow create: if isAuth();
+      allow read: if isAuth() && request.auth.uid == resource.data.userId;
+    }
+    match /auditLogs/{a} {
+      allow write: if isAuth();
+      allow read: if false;
+    }
+  }
+}

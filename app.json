@@ -1,7 +1,11 @@
 {
   "expo": {
+    "plugins": [
+      "expo-build-properties"
+    ],
     "name": "TaskManagerApp",
     "slug": "TaskManagerApp",
+    "owner": "starshield",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,11 +24,18 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "googleServicesFile": "./google-services.json",
       "edgeToEdgeEnabled": true,
       "package": "com.starshield.TaskManagerApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a91633d0-3bfe-466b-9058-45b8f77be384"
+      }
     }
   }
 }

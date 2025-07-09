@@ -21,8 +21,8 @@ const firebaseConfig = {
   projectId: "to-do-list-b831f",
   storageBucket: "to-do-list-b831f.firebasestorage.app",
   messagingSenderId: "1045803774649",
-  appId: "1:1045803774649:web:1609b1efe7571daf4c6168",
-  measurementId: "G-619D6XP549",
+  appId: "1:1045803774649:web:a0e1b30f39ec857e4c6168",
+  measurementId: "G-GJ6T2GECBZ",
 };
 
 // Initialize Firebase app
