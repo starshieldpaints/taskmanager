@@ -25,8 +25,13 @@ export default function AdminNavigator() {
         options={({ navigation }) => ({
           title: 'Admin Dashboard',
           headerRight: () =>
-            (role === 'admin' || role === 'superadmin') ? (
-              <Button onPress={() => navigation.navigate('CreateTask')} color="#fff">
+            role === 'admin' || role === 'superadmin' ? (
+              <Button
+                mode="contained"
+                onPress={() => navigation.navigate('CreateTask')}
+                style={{ backgroundColor: '#D32F2F' }}
+                labelStyle={{ color: '#fff' }}
+              >
                 Create
               </Button>
             ) : null,
@@ -44,7 +49,8 @@ export default function AdminNavigator() {
         component={TaskDetailScreen}
         options={{ title: 'Task Detail' }}
       />
-]      <Stack.Screen
+      <Stack.Screen
+
         name="EditProfile"
         component={EditProfileScreen}
         options={{ title: 'Edit Profile' }}

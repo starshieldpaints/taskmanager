@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
-import { Text, Button } from 'react-native-paper';
+import { Text, Button, IconButton } from 'react-native-paper';
+
 import { doc, getDoc } from 'firebase/firestore';
 import { AuthContext } from '../utils/auth';
 import { db } from '../firebase/config';
@@ -21,9 +22,13 @@ export default function ProfileScreen({ navigation }) {
     React.useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <Button onPress={() => navigation.navigate('EditProfile')} color="#fff">
-                    Edit
-                </Button>
+                <IconButton
+                    icon="pencil"
+                    size={24}
+                    iconColor="#fff"
+                    onPress={() => navigation.navigate('EditProfile')}
+                />
+
             )
         });
     }, [navigation]);
@@ -34,7 +39,8 @@ export default function ProfileScreen({ navigation }) {
                 <Image source={{ uri: profile.photoURL }} style={styles.avatar} />
             )}
             <Text style={styles.text}>Email: {user?.email}</Text>
-            <Text style={styles.text}>Name: {profile?.firstName} {profile?.lastName}</Text>
+            <Text style={styles.text}>First Name: {profile?.firstName}</Text>
+            <Text style={styles.text}>Last Name: {profile?.lastName}</Text>
             <Text style={styles.text}>Phone: {profile?.phone}</Text>
             <Text style={styles.text}>Role: {role}</Text>
 

@@ -25,25 +25,19 @@ export default function TaskTabs() {
           headerRight: () =>
             ['admin', 'superadmin'].includes(role) ? (
               <Button
+                mode="contained"
                 onPress={() => navigation.navigate('Tasks', { screen: 'CreateTask' })}
-                color="#fff"
+                style={{ backgroundColor: '#D32F2F' }}
+                labelStyle={{ color: '#fff' }}
+
               >
                 Create
               </Button>
             ) : null,
         })}
       />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileStack}
-        options={({ navigation }) => ({
-          headerRight: () => (
-            <Button onPress={() => navigation.navigate('Profile', { screen: 'EditProfile' })} color="#fff">
-              Edit
-            </Button>
-          ),
-        })}
-      />
+      <Tab.Screen name="Profile" component={ProfileStack} />
+
     </Tab.Navigator>
   );
 }

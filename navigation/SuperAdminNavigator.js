@@ -24,8 +24,13 @@ export default function SuperAdminNavigator() {
         options={({ navigation }) => ({
           title: 'Super Admin Dashboard',
           headerRight: () =>
-            (role === 'admin' || role === 'superadmin') ? (
-              <Button onPress={() => navigation.navigate('CreateTask')} color="#fff">
+            role === 'admin' || role === 'superadmin' ? (
+              <Button
+                mode="contained"
+                onPress={() => navigation.navigate('CreateTask')}
+                style={{ backgroundColor: '#D32F2F' }}
+                labelStyle={{ color: '#fff' }}
+              >
                 Create
               </Button>
             ) : null,
