@@ -11,7 +11,6 @@ import {
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import app from '../firebase/config';
 
-
 const auth = getAuth(app);
 const db = getFirestore(app);
 
@@ -29,10 +28,10 @@ export function AuthProvider({ children }) {
         // Listen for auth state changes using modular API
         const unsubscribe = onAuthStateChanged(auth, async (u) => {
             if (u) {
+                setUser(u);
                 const snap = await getDoc(doc(db, 'users', u.uid));
                 const data = snap.exists() ? snap.data() : {};
                 setRole(data.role || 'user');
-                setUser(u);
 
             } else {
                 setUser(null);
