@@ -30,12 +30,10 @@ export default function AdminNavigator() {
                 mode="text"
                 labelStyle={{ color: '#fff' }}
                 onPress={() => navigation.navigate('CreateTask')}
-
               >
                 Create
               </Button>
             ) : null,
-
         })}
       />
       <Stack.Screen

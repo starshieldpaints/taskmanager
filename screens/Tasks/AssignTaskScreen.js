@@ -25,20 +25,21 @@ export default function AssignTaskScreen() {
     const { role } = useContext(AuthContext);
     const [title, setTitle] = useState('');
     const [desc, setDesc] = useState('');
-    const [assigneeType, setAssigneeType] = useState('user');
-    const [assigneeId, setAssigneeId] = useState('');
+    const [assignedType, setAssignedType] = useState('user');
+    const [assignedTo, setAssignedTo] = useState('');
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const q = query(
             collection(db, 'users'),
-            where('role', '==', assigneeType)
+            where('role', '==', assignedType)
+
         );
         return onSnapshot(q, (snap) =>
             setList(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
         );
-    }, [assigneeType]);
+    }, [assignedType]);
 
     const assign = async () => {
         try {
@@ -47,19 +48,20 @@ export default function AssignTaskScreen() {
             const docRef = await addDoc(collection(db, 'tasks'), {
                 title,
                 description: desc,
-                assigneeType,
-                assigneeId,
+                assignedType,
+                assignedTo,
                 createdBy: uid,
                 status: 'todo',
                 createdAt: serverTimestamp()
             });
             await sendNotification({
-                userId: assigneeId,
+                userId: assignedTo,
                 type: 'assignment',
                 taskId: docRef.id,
                 message: `New Task: ${title}`,
             });
-            await logAction('assignTask', { taskId: docRef.id, to: assigneeId });
+            await logAction('assignTask', { taskId: docRef.id, to: assignedTo });
+
             Alert.alert('Assigned!');
         } catch (e) {
             Alert.alert('Error', e.message);
@@ -92,13 +94,13 @@ export default function AssignTaskScreen() {
                 onChangeText={setDesc}
             />
             <Picker
-                selectedValue={assigneeType}
-                onValueChange={setAssigneeType}
+                selectedValue={assignedType}
+                onValueChange={setAssignedType}
             >
                 <Picker.Item label="User" value="user" />
                 <Picker.Item label="Admin" value="admin" />
             </Picker>
-            <Picker selectedValue={assigneeId} onValueChange={setAssigneeId}>
+            <Picker selectedValue={assignedTo} onValueChange={setAssignedTo}>
                 {list.map((u) => (
                     <Picker.Item key={u.id} label={u.email} value={u.id} />
                 ))}

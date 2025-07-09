@@ -18,12 +18,10 @@ export default function AdminDashboard({ navigation }) {
 
     useEffect(() => {
         const uid = auth.currentUser.uid;
-
         const q = query(
             collection(db, 'tasks'),
             where('assignedType', '==', 'admin'),
             where('assignedTo', '==', uid)
-
         );
         const unsub = onSnapshot(q, (snap) => {
             setTasks(snap.docs.map((d) => ({ id: d.id, ...d.data() })));

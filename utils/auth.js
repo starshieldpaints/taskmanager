@@ -10,10 +10,8 @@ import {
 } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import app from '../firebase/config';
-
 const auth = getAuth(app);
 const db = getFirestore(app);
-
 export const AuthContext = createContext({ user: null, role: null, loading: true });
 
 /**
@@ -30,8 +28,7 @@ export function AuthProvider({ children }) {
             if (u) {
                 setUser(u);
                 const snap = await getDoc(doc(db, 'users', u.uid));
-                setRole(snap.exists() ? snap.data().role : null);
-
+                setRole(snap.exists() ? snap.data().role : 'user');
             } else {
                 setUser(null);
                 setRole(null);

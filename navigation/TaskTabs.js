@@ -49,7 +49,6 @@ export default function TaskTabs() {
           )
         })}
       />
-
     </Tab.Navigator>
   );
 }
