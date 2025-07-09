@@ -11,6 +11,7 @@ import {
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import app from '../firebase/config';
 
+
 const auth = getAuth(app);
 const db = getFirestore(app);
 
@@ -32,6 +33,7 @@ export function AuthProvider({ children }) {
                 const data = snap.exists() ? snap.data() : {};
                 setRole(data.role || 'user');
                 setUser(u);
+
             } else {
                 setUser(null);
                 setRole(null);

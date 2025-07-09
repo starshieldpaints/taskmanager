@@ -6,6 +6,7 @@ import { AuthContext } from '../utils/auth';
 export default function ProfileScreen() {
     const { user, role, signOut } = useContext(AuthContext);
 
+
     return (
         <View style={styles.container}>
             <Text>Email: {user?.email}</Text>
