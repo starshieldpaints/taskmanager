@@ -1,20 +1,22 @@
 import React, { useContext } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Text, Button } from 'react-native-paper';
 import { AuthContext } from '../utils/auth';
-import { firebase } from '../firebase/config';
 
 export default function ProfileScreen() {
-    const { user, role } = useContext(AuthContext);
-
-    const handleLogout = async () => {
-        await firebase.auth().signOut();
-    };
+    const { user, role, signOut } = useContext(AuthContext);
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Email: {user.email}</Text>
-            <Text style={styles.text}>Role: {role}</Text>
-            <Button title="Logout" onPress={handleLogout} color="#d32f2f" />
+            <Text>Email: {user?.email}</Text>
+            <Text>Role: {role}</Text>
+            <Button
+                mode="contained"
+                onPress={signOut}
+                style={{ marginTop: 20, backgroundColor: '#d32f2f' }}
+            >
+                Logout
+            </Button>
         </View>
     );
 }
