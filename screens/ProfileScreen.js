@@ -37,6 +37,7 @@ export default function ProfileScreen({ navigation }) {
             <Text style={styles.text}>Name: {profile?.firstName} {profile?.lastName}</Text>
             <Text style={styles.text}>Phone: {profile?.phone}</Text>
             <Text style={styles.text}>Role: {role}</Text>
+
             <Button
                 mode="contained"
                 onPress={signOut}
