@@ -1,20 +1,41 @@
-import React, { useContext } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, StyleSheet, Image } from 'react-native';
+import { Text, Button } from 'react-native-paper';
+import { doc, getDoc } from 'firebase/firestore';
 import { AuthContext } from '../utils/auth';
-import { firebase } from '../firebase/config';
+import { db } from '../firebase/config';
 
-export default function ProfileScreen() {
-    const { user, role } = useContext(AuthContext);
+export default function ProfileScreen({ navigation }) {
+    const { user, role, signOut } = useContext(AuthContext);
+    const [profile, setProfile] = useState(null);
 
-    const handleLogout = async () => {
-        await firebase.auth().signOut();
-    };
+    useEffect(() => {
+        (async () => {
+            if (user) {
+                const snap = await getDoc(doc(db, 'users', user.uid));
+                if (snap.exists()) setProfile(snap.data());
+            }
+        })();
+    }, [user]);
+
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Email: {user.email}</Text>
+            {profile?.photoURL && (
+                <Image source={{ uri: profile.photoURL }} style={styles.avatar} />
+            )}
+            <Text style={styles.text}>Email: {user?.email}</Text>
+            <Text style={styles.text}>First Name: {profile?.firstName}</Text>
+            <Text style={styles.text}>Last Name: {profile?.lastName}</Text>
+            <Text style={styles.text}>Phone: {profile?.phone}</Text>
             <Text style={styles.text}>Role: {role}</Text>
-            <Button title="Logout" onPress={handleLogout} color="#d32f2f" />
+            <Button
+                mode="contained"
+                onPress={signOut}
+                style={{ marginTop: 20, backgroundColor: '#d32f2f' }}
+            >
+                Logout
+            </Button>
         </View>
     );
 }
@@ -27,5 +48,6 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: '#fff'
     },
-    text: { fontSize: 16, marginBottom: 12 }
+    text: { fontSize: 16, marginBottom: 12 },
+    avatar: { width: 80, height: 80, borderRadius: 40, marginBottom: 12 }
 });

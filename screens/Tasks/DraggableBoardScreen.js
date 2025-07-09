@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { firebase } from '../../firebase/config';
+import { db } from '../../firebase/config';
+import { collection, onSnapshot } from 'firebase/firestore';
 import DraggableTaskBoard from '../../components/DraggableTaskBoard';
 
 export default function DraggableBoardScreen() {
@@ -8,13 +9,10 @@ export default function DraggableBoardScreen() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsub = firebase
-            .firestore()
-            .collection('tasks')
-            .onSnapshot((snap) => {
-                setTasks(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-                setLoading(false);
-            });
+        const unsub = onSnapshot(collection(db, 'tasks'), (snap) => {
+            setTasks(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+            setLoading(false);
+        });
         return unsub;
     }, []);
 
