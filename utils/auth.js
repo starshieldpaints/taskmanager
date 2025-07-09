@@ -1,53 +1,57 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { auth, db } from '../firebase/config';
-import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut as fbSignOut,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  reload,
+} from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import app from '../firebase/config';
 
-export const AuthContext = createContext();
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+export const AuthContext = createContext({ user: null, role: null, loading: true });
 
 /**
  * Wrap your app in <AuthProvider> to get { user, role, loading } everywhere.
  */
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const [role, setRole] = useState('');
+    const [role, setRole] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // Listen for auth state changes using modular API
         const unsubscribe = onAuthStateChanged(auth, async (u) => {
-            setUser(u);
             if (u) {
-                // Load role from Firestore
-                try {
-                    const snap = await getDoc(doc(db, 'users', u.uid));
-                    setRole(snap.exists() ? snap.data().role : 'user');
-                } catch {
-                    setRole('user');
-                }
+                const snap = await getDoc(doc(db, 'users', u.uid));
+                const data = snap.exists() ? snap.data() : {};
+                setRole(data.role || 'user');
+                setUser(u);
+
             } else {
-                setRole('');
+                setUser(null);
+                setRole(null);
             }
             setLoading(false);
         });
         return unsubscribe;
     }, []);
 
+    const signOut = () => fbSignOut(auth);
+
     return (
-        <AuthContext.Provider value={{ user, role, loading }}>
+        <AuthContext.Provider value={{ user, role, loading, signOut }}>
             {children}
         </AuthContext.Provider>
     );
 }
 
-
-import {
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    sendEmailVerification,
-    reload,
-    signOut,
-} from 'firebase/auth';
 
 /** Subscribe to auth changes; returns unsubscribe() */
 export function listenAuth(cb) {
@@ -80,5 +84,6 @@ export function reloadCurrentUser() {
 
 /** Sign out */
 export function logout() {
-    return signOut(auth);
+    return fbSignOut(auth);
 }
+
