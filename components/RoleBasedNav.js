@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AuthContext } from '../utils/auth';
 
-import TaskBoard            from '../screens/Tasks/TaskBoard';
+import TaskStack            from '../navigation/TaskStack';
 import ProfileScreen        from '../screens/ProfileScreen';
 import UserDashboard        from '../screens/Dashboard/UserDashboard';
 import AdminDashboard       from '../screens/Dashboard/AdminDashboard';
@@ -15,7 +15,7 @@ export default function RoleBasedNav() {
 
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
-      <Tab.Screen name="Tasks"   component={TaskBoard} />
+      <Tab.Screen name="Tasks"   component={TaskStack} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
 
       {/* Everyone with a role can see the User dashboard */}

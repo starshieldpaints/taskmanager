@@ -7,7 +7,16 @@ import {
     Text,
     StyleSheet
 } from 'react-native';
-import { firebase } from '../firebase/config';
+import { auth, db } from '../firebase/config';
+import {
+    collection,
+    doc,
+    query,
+    orderBy,
+    onSnapshot,
+    addDoc,
+    serverTimestamp
+} from 'firebase/firestore';
 import colors from '../utils/colors';
 
 export default function ChatRoom({ taskId }) {
@@ -15,30 +24,23 @@ export default function ChatRoom({ taskId }) {
     const [msg, setMsg] = useState('');
 
     useEffect(() => {
-        const unsub = firebase
-            .firestore()
-            .collection('tasks')
-            .doc(taskId)
-            .collection('chat')
-            .orderBy('sentAt', 'asc')
-            .onSnapshot(snap =>
-                setMessages(snap.docs.map(d => ({ id: d.id, ...d.data() })))
-            );
+        const q = query(
+            collection(db, 'tasks', taskId, 'chat'),
+            orderBy('sentAt', 'asc')
+        );
+        const unsub = onSnapshot(q, (snap) =>
+            setMessages(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
+        );
         return unsub;
     }, [taskId]);
 
     const send = async () => {
         if (!msg.trim()) return;
-        await firebase
-            .firestore()
-            .collection('tasks')
-            .doc(taskId)
-            .collection('chat')
-            .add({
-                text: msg,
-                by: firebase.auth().currentUser.uid,
-                sentAt: firebase.firestore.FieldValue.serverTimestamp(),
-            });
+        await addDoc(collection(db, 'tasks', taskId, 'chat'), {
+            text: msg,
+            by: auth.currentUser.uid,
+            sentAt: serverTimestamp(),
+        });
         setMsg('');
     };
 

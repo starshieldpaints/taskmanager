@@ -1,15 +1,14 @@
 import React, { useContext } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button } from 'react-native-paper';
-import SuperAdminDashboard from '../screens/Dashboard/SuperAdminDashboard';
+import { AuthContext } from '../utils/auth';
+import TaskBoard from '../screens/Tasks/TaskBoard';
 import CreateTaskScreen from '../screens/Tasks/CreateTaskScreen';
 import TaskDetailScreen from '../screens/Tasks/TaskDetailScreen';
-import EditProfileScreen from '../screens/Profile/EditProfileScreen';
-import { AuthContext } from '../utils/auth';
 
 const Stack = createNativeStackNavigator();
 
-export default function SuperAdminNavigator() {
+export default function TaskStack() {
   const { role } = useContext(AuthContext);
   return (
     <Stack.Navigator
@@ -19,18 +18,13 @@ export default function SuperAdminNavigator() {
       }}
     >
       <Stack.Screen
-        name="SuperAdminDash"
-        component={SuperAdminDashboard}
+        name="TaskBoard"
+        component={TaskBoard}
         options={({ navigation }) => ({
-          title: 'Super Admin Dashboard',
+          title: 'Tasks',
           headerRight: () =>
             role === 'admin' || role === 'superadmin' ? (
-              <Button
-                mode="contained"
-                onPress={() => navigation.navigate('CreateTask')}
-                style={{ backgroundColor: '#D32F2F' }}
-                labelStyle={{ color: '#fff' }}
-              >
+              <Button onPress={() => navigation.navigate('CreateTask')} color="#fff">
                 Create
               </Button>
             ) : null,
@@ -45,11 +39,6 @@ export default function SuperAdminNavigator() {
         name="TaskDetail"
         component={TaskDetailScreen}
         options={{ title: 'Task Detail' }}
-      />
-      <Stack.Screen
-        name="EditProfile"
-        component={EditProfileScreen}
-        options={{ title: 'Edit Profile' }}
       />
     </Stack.Navigator>
   );
