@@ -7,7 +7,8 @@ import {
     ActivityIndicator
 } from 'react-native';
 import { AuthContext } from '../../utils/auth';
-import { firebase } from '../../firebase/config';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebase/config';
 import TaskCard from '../../components/TaskCard';
 
 export default function UserDashboard() {
@@ -16,15 +17,15 @@ export default function UserDashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsub = firebase
-            .firestore()
-            .collection('tasks')
-            .where('assigneeType', '==', 'user')
-            .where('assigneeId', '==', user.uid)
-            .onSnapshot((snap) => {
-                setTasks(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-                setLoading(false);
-            });
+        const q = query(
+            collection(db, 'tasks'),
+            where('assignedType', '==', 'user'),
+            where('assignedTo', '==', user.uid)
+        );
+        const unsub = onSnapshot(q, (snap) => {
+            setTasks(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+            setLoading(false);
+        });
         return unsub;
     }, [user]);
 

@@ -1,5 +1,6 @@
 import * as Notifications from 'expo-notifications';
-import { firebase } from '../firebase/config';
+import { auth, db } from '../firebase/config';
+import { doc, updateDoc } from 'firebase/firestore';
 import { Platform } from 'react-native';
 
 /**
@@ -24,12 +25,8 @@ export async function registerForPushNotificationsAsync() {
     const token = tokenData.data;
 
     // Save to Firestore
-    const uid = firebase.auth().currentUser.uid;
-    await firebase
-        .firestore()
-        .collection('users')
-        .doc(uid)
-        .update({ fcmToken: token });
+    const uid = auth.currentUser.uid;
+    await updateDoc(doc(db, 'users', uid), { fcmToken: token });
 
     // Android only: set channel
     if (Platform.OS === 'android') {

@@ -1,12 +1,13 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import 'firebase/compat/storage';
 import Constants from 'expo-constants';
+import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
 
 // Resolve env vars from Expo config or process.env for Node tools
 const extra =
@@ -14,21 +15,21 @@ const extra =
   Constants.manifest?.extra ||
   process.env;
 
-
 const firebaseConfig = {
-  apiKey: FIREBASE_API_KEY,
-  authDomain: FIREBASE_AUTH_DOMAIN,
-  projectId: FIREBASE_PROJECT_ID,
-  storageBucket: FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
-  appId: FIREBASE_APP_ID,
-  measurementId: FIREBASE_MEASUREMENT_ID,
+  apiKey: extra.FIREBASE_API_KEY,
+  authDomain: extra.FIREBASE_AUTH_DOMAIN,
+  projectId: extra.FIREBASE_PROJECT_ID,
+  storageBucket: extra.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: extra.FIREBASE_MESSAGING_SENDER_ID,
+  appId: extra.FIREBASE_APP_ID,
+  measurementId: extra.FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize once for both compat and modular APIs
-const app = firebase.apps.length
-  ? firebase.app()
-  : firebase.initializeApp(firebaseConfig);
+// Initialize Firebase app
+const app = initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 // Initialize Firebase App Check in browser environments
 if (typeof window !== 'undefined') {
@@ -37,15 +38,13 @@ if (typeof window !== 'undefined') {
       provider: new ReCaptchaV3Provider(extra.RECAPTCHA_KEY),
       isTokenAutoRefreshEnabled: true,
     });
-  } catch (err) {
-    // ignore duplicate initialization errors
+  } catch {
+    // ignore duplicate initialization
   }
 }
 
-// Export compat instance for existing code
-export { firebase };
-
-// Export modular helpers for new code
+// Export app and modular helpers
+export { app, firebase };
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);

@@ -7,36 +7,38 @@ import {
     Text,
     StyleSheet
 } from 'react-native';
-import { firebase } from '../../firebase/config';
+import { auth, db } from '../../firebase/config';
+import {
+    collection,
+    doc,
+    query,
+    orderBy,
+    onSnapshot,
+    addDoc,
+    serverTimestamp
+} from 'firebase/firestore';
 
 export default function CommentsSection({ taskId }) {
     const [comments, setComments] = useState([]);
     const [text, setText] = useState('');
 
     useEffect(() => {
-        return firebase
-            .firestore()
-            .collection('tasks')
-            .doc(taskId)
-            .collection('comments')
-            .orderBy('createdAt', 'asc')
-            .onSnapshot((snap) =>
-                setComments(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
-            );
+        const q = query(
+            collection(db, 'tasks', taskId, 'comments'),
+            orderBy('createdAt', 'asc')
+        );
+        return onSnapshot(q, (snap) =>
+            setComments(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
+        );
     }, [taskId]);
 
     const post = async () => {
         if (!text.trim()) return;
-        await firebase
-            .firestore()
-            .collection('tasks')
-            .doc(taskId)
-            .collection('comments')
-            .add({
-                text,
-                by: firebase.auth().currentUser.uid,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
+        await addDoc(collection(db, 'tasks', taskId, 'comments'), {
+            text,
+            by: auth.currentUser.uid,
+            createdAt: serverTimestamp()
+        });
         setText('');
     };
 
