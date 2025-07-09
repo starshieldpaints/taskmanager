@@ -9,6 +9,7 @@ export default function ProfileScreen({ navigation }) {
     const { user, role, signOut } = useContext(AuthContext);
     const [profile, setProfile] = useState(null);
 
+
     useEffect(() => {
         (async () => {
             if (user) {
@@ -17,6 +18,7 @@ export default function ProfileScreen({ navigation }) {
             }
         })();
     }, [user]);
+
 
 
     return (
