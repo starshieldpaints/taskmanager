@@ -18,7 +18,6 @@ export default function AdminDashboard({ navigation }) {
 
     useEffect(() => {
         const uid = auth.currentUser.uid;
-        // fetch tasks assigned to this admin using the modular query API
         const q = query(
             collection(db, 'tasks'),
             where('assignedType', '==', 'admin'),

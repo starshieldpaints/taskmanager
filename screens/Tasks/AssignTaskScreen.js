@@ -34,6 +34,7 @@ export default function AssignTaskScreen() {
         const q = query(
             collection(db, 'users'),
             where('role', '==', assignedType)
+
         );
         return onSnapshot(q, (snap) =>
             setList(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
@@ -60,6 +61,7 @@ export default function AssignTaskScreen() {
                 message: `New Task: ${title}`,
             });
             await logAction('assignTask', { taskId: docRef.id, to: assignedTo });
+
             Alert.alert('Assigned!');
         } catch (e) {
             Alert.alert('Error', e.message);

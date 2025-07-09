@@ -28,6 +28,7 @@ export default function TaskTabs() {
                 mode="text"
                 labelStyle={{ color: '#fff' }}
                 onPress={() => navigation.navigate('Tasks', { screen: 'CreateTask' })}
+
               >
                 Create
               </Button>

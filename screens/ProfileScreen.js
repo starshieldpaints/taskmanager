@@ -4,7 +4,6 @@ import { Text, Button } from 'react-native-paper';
 import { doc, getDoc } from 'firebase/firestore';
 import { AuthContext } from '../utils/auth';
 import { db } from '../firebase/config';
-
 export default function ProfileScreen({ navigation }) {
     const { user, role, signOut } = useContext(AuthContext);
     const [profile, setProfile] = useState(null);
@@ -17,6 +16,7 @@ export default function ProfileScreen({ navigation }) {
             }
         })();
     }, [user]);
+
 
 
     return (

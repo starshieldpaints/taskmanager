@@ -48,10 +48,12 @@ export default function AdminNavigator() {
         options={{ title: 'Task Detail' }}
       />
       <Stack.Screen
+
         name="EditProfile"
         component={EditProfileScreen}
         options={{ title: 'Edit Profile' }}
       />
+
     </Stack.Navigator>
   );
 }
