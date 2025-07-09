@@ -31,7 +31,6 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-
 // Initialize Firebase App Check in browser environments
 if (typeof window !== 'undefined') {
   try {
